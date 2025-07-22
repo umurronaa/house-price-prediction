@@ -9,71 +9,6 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.linear_model import LinearRegression, Ridge, Lasso, ElasticNet
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 
-# Importing DataFrame
-housing_df = pd.read_csv("ames_housing.csv")
-
-# Eksik verisi olan sütunların ve eksik veri sayısının tespiti
-print(housing_df.isna().sum()[housing_df.isna().sum() > 0].sort_values(ascending=False))
-
-# Eksik verisi olan sütunların veri tipleri
-missing_cols = ['Pool QC', 'Misc Feature', 'Alley', 'Fence', 'Mas Vnr Type', 'Fireplace Qu',
-                'Lot Frontage', 'Garage Yr Blt', 'Garage Cond', 'Garage Qual', 'Garage Finish', 'Garage Type',
-                'Bsmt Exposure', 'BsmtFin Type 2', 'Bsmt Qual', 'BsmtFin Type 1', 'Bsmt Cond',
-                'Mas Vnr Area', 'Bsmt Half Bath', 'Bsmt Full Bath', 'Electrical', 'Garage Cars',
-                'Garage Area', 'Total Bsmt SF', 'Bsmt Unf SF', 'BsmtFin SF 2', 'BsmtFin SF 1']
-
-# Eksik verisi olan sütunları numerical ve categorical olarak ayır
-print(housing_df[missing_cols].dtypes)
-categorical_missing_cols = ['Pool QC', 'Misc Feature', 'Alley', 'Fence', 'Mas Vnr Type', 'Fireplace Qu',
-                    'Garage Cond', 'Garage Qual', 'Garage Finish', 'Garage Type', 'Bsmt Exposure',
-                    'BsmtFin Type 2', 'Bsmt Qual', 'BsmtFin Type 1', 'Bsmt Cond', 'Electrical']
-
-numerical_missing_cols = ['Lot Frontage', 'Garage Yr Blt', 'Mas Vnr Area', 'Bsmt Half Bath', 'Bsmt Full Bath',
-                  'Garage Cars', 'Garage Area', 'Total Bsmt SF', 'Bsmt Unf SF', 'BsmtFin SF 2', 'BsmtFin SF 1']
-
-# Numerical sütunlarda o özellik olmayan evlere 0 de ve modelin özellik olup olmadığını öğrenmesi için flag sütunu ekle
-for col in numerical_missing_cols:
-    housing_df[col + '_missing'] = housing_df[col].isnull().astype(int)
-    housing_df[col] = housing_df[col].fillna(0)
-
-# Eksik verisi olan sütunların ve eksik veri sayısının tekrar kontrolü
-print(housing_df.isna().sum()[housing_df.isna().sum() > 0].sort_values(ascending=False))
-
-        # Splitting the data
-np.random.seed(42)
-
-X = housing_df.drop("SalePrice", axis=1)
-y = housing_df["SalePrice"]
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-
-        # Encoding
-# Categorical sütunları bul
-categorical_cols = X_train.select_dtypes(include=['object']).columns
-categorical_cols
-
-# Build OneHotEncoder and fit the categorical columns
-ohe = OneHotEncoder(handle_unknown='ignore', sparse_output=False)
-ohe.fit(X_train[categorical_cols]);
-
-# Hem train hem de test'teki kategorik sütunları dönüştür
-X_train_ohe = pd.DataFrame(ohe.transform(X_train[categorical_cols]),
-                                         columns=ohe.get_feature_names_out(categorical_cols),
-                                         index=X_train.index)
-X_test_ohe = pd.DataFrame(ohe.transform(X_test[categorical_cols]),
-                          columns=ohe.get_feature_names_out(categorical_cols),
-                          index=X_test.index)
-
-# Numerical sütunları al
-numerical_cols = X_train.drop(columns=categorical_cols).columns
-X_train_numerical = X_train[numerical_cols]
-X_test_numerical = X_test[numerical_cols]
-
-# Numerical ve categorical sütunları birleştir
-X_train_final = pd.concat([X_train_numerical, X_train_ohe], axis=1)
-X_test_final = pd.concat([X_test_numerical, X_test_ohe], axis=1)
-
-        # Model and Predictions
 def evaluate_preds(model, X_train, X_test, y_train, y_test, y_pred):
     from sklearn.metrics import mean_squared_error
     score_train = model.score(X_train, y_train)
@@ -86,6 +21,75 @@ def evaluate_preds(model, X_train, X_test, y_train, y_test, y_pred):
     print(f"Root mean squared error: {rmse}")
     return score_train, score_test, mse, rmse
 
+# Importing DataFrame
+housing_df = pd.read_csv("ames_housing.csv")
+
+# Detection of columns with missing values and number of missing values
+print(housing_df.isna().sum()[housing_df.isna().sum() > 0].sort_values(ascending=False))
+
+# Detection of columns with missing values and number of missing values
+missing_cols = ['Pool QC', 'Misc Feature', 'Alley', 'Fence', 'Mas Vnr Type', 'Fireplace Qu',
+                'Lot Frontage', 'Garage Yr Blt', 'Garage Cond', 'Garage Qual', 'Garage Finish', 'Garage Type',
+                'Bsmt Exposure', 'BsmtFin Type 2', 'Bsmt Qual', 'BsmtFin Type 1', 'Bsmt Cond',
+                'Mas Vnr Area', 'Bsmt Half Bath', 'Bsmt Full Bath', 'Electrical', 'Garage Cars',
+                'Garage Area', 'Total Bsmt SF', 'Bsmt Unf SF', 'BsmtFin SF 2', 'BsmtFin SF 1']
+
+# Split columns with missing values as numerical and categorical
+print(housing_df[missing_cols].dtypes)
+categorical_missing_cols = ['Pool QC', 'Misc Feature', 'Alley', 'Fence', 'Mas Vnr Type', 'Fireplace Qu',
+                    'Garage Cond', 'Garage Qual', 'Garage Finish', 'Garage Type', 'Bsmt Exposure',
+                    'BsmtFin Type 2', 'Bsmt Qual', 'BsmtFin Type 1', 'Bsmt Cond', 'Electrical']
+
+numerical_missing_cols = ['Lot Frontage', 'Garage Yr Blt', 'Mas Vnr Area', 'Bsmt Half Bath', 'Bsmt Full Bath',
+                  'Garage Cars', 'Garage Area', 'Total Bsmt SF', 'Bsmt Unf SF', 'BsmtFin SF 2', 'BsmtFin SF 1']
+
+# Fill the missing values in the categorical columns with 'None'
+for col in categorical_missing_cols:
+    housing_df[col] = housing_df[col].fillna('None')
+
+# Filling in the missing values with 0 in the numerical columns and add a flag column for model to learn that if this feature is available or not
+for col in numerical_missing_cols:
+    housing_df[col + '_missing'] = housing_df[col].isnull().astype(int)
+    housing_df[col] = housing_df[col].fillna(0)
+
+# Re-checking the columns with missing values and the number of missing values
+print(housing_df.isna().sum()[housing_df.isna().sum() > 0].sort_values(ascending=False))
+
+        # Splitting the data
+np.random.seed(42)
+
+X = housing_df.drop("SalePrice", axis=1)
+y = housing_df["SalePrice"]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+        # Encoding
+# Find categorical columns
+categorical_cols = X_train.select_dtypes(include=['object']).columns
+categorical_cols
+
+# Build OneHotEncoder and fit the categorical columns
+ohe = OneHotEncoder(handle_unknown='ignore', sparse_output=False)
+ohe.fit(X_train[categorical_cols]);
+
+# Encoding categorical columns in both train and test sets
+X_train_ohe = pd.DataFrame(ohe.transform(X_train[categorical_cols]),
+                                         columns=ohe.get_feature_names_out(categorical_cols),
+                                         index=X_train.index)
+X_test_ohe = pd.DataFrame(ohe.transform(X_test[categorical_cols]),
+                          columns=ohe.get_feature_names_out(categorical_cols),
+                          index=X_test.index)
+
+# Take numerical columns
+numerical_cols = X_train.drop(columns=categorical_cols).columns
+X_train_numerical = X_train[numerical_cols]
+X_test_numerical = X_test[numerical_cols]
+
+# Combine numerical and categorical columns
+X_train_final = pd.concat([X_train_numerical, X_train_ohe], axis=1)
+X_test_final = pd.concat([X_test_numerical, X_test_ohe], axis=1)
+
+        # Model and Predictions
 # Linear Regression Model
 linear_regression = LinearRegression()
 
@@ -368,7 +372,7 @@ num_ranges = {
     'BsmtFin SF 1_missing': (0, 1),
 }
 
-# MS SubClass için olası değerler
+# Possible values for MS SubClass
 ms_subclass_values = num_ranges['MS SubClass']
 
 # Creating data dictionary
@@ -407,26 +411,21 @@ new_houses_splitted = new_houses.drop("SalePrice", axis=1)
 
 categorical_missing_cols_new = ['Alley', 'Bsmt Cond', 'BsmtFin Type 1', 'BsmtFin Type 2', 'Fireplace Qu', 'Garage Qual', 'Garage Cond', 'Fence', 'Misc Feature']
 
-# Categorical sütunlardaki eksik verileri yani o özellik bulunmayan evlere 'None' de
 for col in categorical_missing_cols_new:
     new_houses_splitted[col] = new_houses_splitted[col].fillna('None')
 
-# Eksik verisi olan sütunların ve eksik veri sayısının tekrar kontrolü
 print(new_houses_splitted.isna().sum()[new_houses_splitted.isna().sum() > 0].sort_values(ascending=False))
 print(new_houses_splitted.dtypes.value_counts())
 
     # Encoding
 from sklearn.preprocessing import OneHotEncoder
-# Hem train hem de test'teki kategorik sütunları dönüştür
 new_houses_ohe = pd.DataFrame(ohe.transform(new_houses_splitted[categorical_cols]),
                                          columns=ohe.get_feature_names_out(categorical_cols),
                                          index=new_houses_splitted.index)
 
-# Numerical sütunları al
 numerical_cols = new_houses_splitted.drop(columns=categorical_cols).columns
 new_houses_numerical = new_houses_splitted[numerical_cols]
 
-# Numerical ve categorical sütunları birleştir
 new_houses_final = pd.concat([new_houses_numerical, new_houses_ohe], axis=1)
 
 # New predictions
@@ -434,6 +433,6 @@ new_houses_predictions = the_best_model.predict(new_houses_final)
 new_houses_predictions
 
 # Comparing a real price in the test set with that house's prediction price
-yeni_ev = X_test_final.iloc[[3]]
-yeni_ev_prediction = the_best_model.predict(yeni_ev)
-yeni_ev_prediction, y_test.iloc[3]
+house_from_dataset = X_test_final.iloc[[3]]
+house_from_dataset_pred = the_best_model.predict(yeni_ev)
+house_from_dataset_pred, y_test.iloc[3]

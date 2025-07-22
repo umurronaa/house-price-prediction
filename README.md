@@ -4,10 +4,10 @@ This project aims to predict house prices using the **Ames Housing Dataset** wit
 
 ## Project Structure
 
-ames-house-price-prediction/
-├── data/ # Dataset (e.g., ames_housing.csv)
-├── notebooks/ # Jupyter Notebook version of the project
-├── scripts/ # Python (.py) script version
+house-price-prediction/
+├── ames_housing.csv # Dataset
+├── project.ipynb # Jupyter Notebook version of the project
+├── project.py script version
 ├── requirements.txt # Python dependencies
 └── README.md # Project description
 
@@ -40,5 +40,5 @@ Many hyperparameters were tried. The best performing model was `GradientBoosting
 - Model comparison and selection
 - Prediction on new, synthetic house data
 
-# Authot
-Developed by Umur Rona
+# Author
+Developed by Umur Rona - umurmrona@gmail.com

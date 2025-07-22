@@ -30,7 +30,17 @@ Both `GridSearchCV`and `RandomizedSearchCV` are used for hyperparameter tuning
 
 ## Results
 
-Many hyperparameters were tried. The best performing model was `GradientBoostingRegressor` with hyperparameters `alpha=0.5`, `max_depth=5`, `min_samples_leaf=2`, `min_samples_split=5`, `n_estimators=300`, `random_state=42`, `subsample=0.7`, `loss='quantile'`
+Many hyperparameters were tried. The best performing model was `GradientBoostingRegressor` with hyperparameters
+```python
+alpha=0.5
+max_depth=5
+min_samples_leaf=2
+min_samples_split=5
+n_estimators=300
+random_state=42
+subsample=0.7
+loss='quantile'
+```
 
 # Features
 

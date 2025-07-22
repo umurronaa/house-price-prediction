@@ -5,11 +5,11 @@ This project aims to predict house prices using the **Ames Housing Dataset** wit
 ## Project Structure
 
 house-price-prediction/
-├── ames_housing.csv # Dataset
-├── project.ipynb # Jupyter Notebook version of the project
-├── project.py script version
-├── requirements.txt # Python dependencies
-└── README.md # Project description
+- ├── ames_housing.csv # Dataset
+- ├── project.ipynb # Jupyter Notebook version of the project
+- ├── project.py script version
+- ├── requirements.txt # Python dependencies
+- └── README.md # Project description
 
 ## Models used
 
@@ -32,14 +32,14 @@ Both `GridSearchCV`and `RandomizedSearchCV` are used for hyperparameter tuning
 
 Many hyperparameters were tried. The best performing model was `GradientBoostingRegressor` with hyperparameters
 ```python
-alpha=0.5
-max_depth=5
-min_samples_leaf=2
-min_samples_split=5
-n_estimators=300
-random_state=42
-subsample=0.7
-loss='quantile'
+alpha = 0.5
+max_depth = 5
+min_samples_leaf = 2
+min_samples_split = 5
+n_estimators = 300
+random_state = 42
+subsample = 0.7
+loss = 'quantile'
 ```
 
 # Features

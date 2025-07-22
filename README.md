@@ -7,7 +7,7 @@ This project aims to predict house prices using the **Ames Housing Dataset** wit
 house-price-prediction/
 - ├── ames_housing.csv # Dataset
 - ├── project.ipynb # Jupyter Notebook version of the project
-- ├── project.py script version
+- ├── project.py # Script version
 - ├── requirements.txt # Python dependencies
 - └── README.md # Project description
 
